@@ -46,7 +46,7 @@ class ContactHelper:
     def modify_first(self, contact):
         wd = self.app.wd
         # click on edit image
-        wd.find_element_by_xpath("(.//*[normalize-space(text()) and normalize-space(.)='gilmirahman@gmail.com'])[1]/following::img[2]").click()
+        wd.find_element_by_xpath("//img[@alt='Edit']").click()
         # modify contact form
         wd.find_element_by_name("firstname").click()
         wd.find_element_by_name("firstname").clear()
