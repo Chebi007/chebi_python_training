@@ -37,7 +37,7 @@ class ContactHelper:
     def modify_first(self, contact):
         wd = self.app.wd
         # click on edit image
-        wd.find_element_by_xpath("//img[@alt='Edit']").click()
+        wd.find_element_by_xpath("//table[@id='maintable']/tbody/tr[2]/td[8]/a/img").click()
         # modify contact form
         self.fill_contact_form(contact)
         # submit contact modification
@@ -48,3 +48,4 @@ class ContactHelper:
         wd.find_element_by_name("selected[]").click()
         wd.find_element_by_xpath("//input[@value='Delete']").click()
         wd.switch_to_alert().accept()
+        wd.find_element_by_css_selector("div.msgbox")
