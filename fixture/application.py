@@ -12,7 +12,6 @@ class Application:
         self.session = SessionHelper(self)
         self.group = GroupHelper(self)
         self.contact = ContactHelper(self)
-        self.wd.implicitly_wait(3)
 
     def is_valid(self):
         try:

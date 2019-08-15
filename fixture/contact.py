@@ -34,18 +34,22 @@ class ContactHelper:
         # submit contact creation
         wd.find_element_by_xpath("(//input[@name='submit'])[2]").click()
 
+    def select_first_contact(self):
+        wd = self.app.wd
+        wd.find_element_by_name("selected[]").click()
+
     def modify_first(self, contact):
         wd = self.app.wd
-        # click on edit image
         wd.find_element_by_xpath("//table[@id='maintable']/tbody/tr[2]/td[8]/a/img").click()
-        # modify contact form
         self.fill_contact_form(contact)
-        # submit contact modification
         wd.find_element_by_name("update").click()
 
     def delete_first(self):
         wd = self.app.wd
-        wd.find_element_by_name("selected[]").click()
+        self.select_first_contact()
         wd.find_element_by_xpath("//input[@value='Delete']").click()
         wd.switch_to_alert().accept()
-        wd.find_element_by_css_selector("div.msgbox")
+
+    def count(self):
+        wd = self.app.wd
+        return len(wd.find_elements_by_name("selected[]"))
