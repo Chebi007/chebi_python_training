@@ -18,21 +18,20 @@ class ContactHelper:
     def fill_contact_form(self, contact):
         wd = self.app.wd
         self.change_field_value("firstname", contact.firstname)
+        self.change_field_value("middlename", contact.middlename)
         self.change_field_value("lastname", contact.lastname)
+        self.change_field_value("nickname", contact.nickname)
+        self.change_field_value("title", contact.title)
+        self.change_field_value("company", contact.company)
+        self.change_field_value("address", contact.address1)
         self.change_field_value("home", contact.homephone)
         self.change_field_value("mobile", contact.mobilephone)
         self.change_field_value("work", contact.workphone)
-        self.change_field_value("phone2", contact.secondaryphone)
         self.change_field_value("email", contact.email)
         self.change_field_value("email2", contact.email2)
         self.change_field_value("email3", contact.email3)
-        #self.change_field_value("middlename", contact.middlename)
-        #self.change_field_value("nickname", contact.nickname)
-        #self.change_field_value("title", contact.title)
-        #self.change_field_value("company", contact.company)
-        #self.change_field_value("address", contact.address)
-        #self.change_field_value("email", contact.email)
-        #self.change_field_value("address2", contact.address2)
+        self.change_field_value("address2", contact.address2)
+        self.change_field_value("phone2", contact.secondaryphone)
 
     def create(self, contact):
         wd = self.app.wd
@@ -156,17 +155,13 @@ class ContactHelper:
             secondaryphone = re.search("P: (.*)", text).group(1)
         else:
             secondaryphone = ""
-        if (re.search("(.*@.*)", text)) is not None:
-            emails = re.search("(.*@.*)", text).group()
-            if (re.search("(.*@.*)\n(.*@.*)", text)) is not None:
-                emails = re.search("(.*@.*)\n(.*@.*)", text).group()
-                if (re.search("(.*@.*)\n(.*@.*)\n(.*@.*)", text)) is not None:
-                    emails = re.search("(.*@.*)\n(.*@.*)\n(.*@.*)", text).group()
-        else:
-            emails = ""
+        emails = []
+        for i in wd.find_elements_by_css_selector("[href*='mailto:']"):
+            emails.append(i.text)
+        all_emails = "\n".join(emails)
         return Contact(fullname=fullname, homephone=homephone, mobilephone=mobilephone,
                        workphone=workphone, secondaryphone=secondaryphone,
-                       all_emails_from_view_page=emails)
+                       all_emails_on_view_page=all_emails)
 
 
     def clear(self, s):
