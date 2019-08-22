@@ -175,10 +175,9 @@ class ContactHelper:
                                             contact.secondaryphone]))))
 
     def merge_emails_like_on_home_page(self, contact):
-        return "\n".join(filter(lambda x: x!= "",
-                                 map(lambda x: self.clear(x),
-                                     filter(lambda x: x is not None,
-                                            [contact.email, contact.email2, contact.email3]))))
+        return "\n".join(filter(lambda x: x!= "", filter(lambda x: x is not None,
+                                            [contact.email, contact.email2, contact.email3])))
 
     def merge_names_like_on_view_page(self, contact):
-        return " ".join(filter(lambda x: x!= "", filter(lambda x: x is not None, [contact.firstname, contact.middlename, contact.lastname])))
+        return " ".join(filter(lambda x: x!= "", filter(lambda x: x is not None,
+                                                        [contact.firstname, contact.middlename, contact.lastname])))
