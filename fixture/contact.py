@@ -51,6 +51,10 @@ class ContactHelper:
         wd = self.app.wd
         wd.find_elements_by_name("selected[]")[index].click()
 
+    def select_contact_by_id(self, id):
+        wd = self.app.wd
+        wd.find_element_by_id("{}".format(id)).click()
+
     def modify_first_contact(self):
         self.modify_contact_by_index(0)
 
@@ -62,6 +66,15 @@ class ContactHelper:
         wd.find_element_by_name("update").click()
         self.contact_cache = None
 
+    def modify_contact_by_id(self, id, contact):
+        wd = self.app.wd
+        self.app.open_home_page()
+        wd.find_element_by_css_selector('a[href="edit.php?id={}"]'.format(id)).click()
+        wd.implicitly_wait(5)
+        self.fill_contact_form(contact)
+        wd.find_element_by_name("update").click()
+        self.contact_cache = None
+
     def delete_first_contact(self):
         self.delete_contact_by_index(0)
 
@@ -69,6 +82,16 @@ class ContactHelper:
         wd = self.app.wd
         self.app.open_home_page()
         self.select_contact_by_index(index)
+        wd.find_element_by_xpath("//input[@value='Delete']").click()
+        wd.switch_to.alert.accept()
+        wd.find_element_by_css_selector("div.msgbox")
+        self.app.open_home_page()
+        self.contact_cache = None
+
+    def delete_contact_by_id(self, id):
+        wd = self.app.wd
+        self.app.open_home_page()
+        self.select_contact_by_id(id)
         wd.find_element_by_xpath("//input[@value='Delete']").click()
         wd.switch_to.alert.accept()
         wd.find_element_by_css_selector("div.msgbox")
@@ -165,7 +188,7 @@ class ContactHelper:
 
 
     def clear(self, s):
-        return re.sub("[() -]", "", s)
+        return re.sub("[() -\/]", "", s)
 
     def merge_phones_like_on_home_page(self, contact):
         return "\n".join(filter(lambda x: x != "",

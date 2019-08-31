@@ -12,7 +12,7 @@ except getopt.GetoptError as err:
     getopt.usage()
     sys.exit(2)
 
-n = 5
+n = 4
 f = "data/groups.json"
 
 for o, a in opts:
@@ -23,7 +23,8 @@ for o, a in opts:
 
 def random_string(prefix, maxlen):
     symbols = string.ascii_letters + string.digits + string.punctuation + " "*10
-    return prefix + "".join([random.choice(symbols) for i in range(random.randrange(maxlen))]).replace("'", "").replace("\\", "").replace("<", "").replace('"', "")
+    return prefix + "".join([random.choice(symbols) for i in range(random.randrange(maxlen))]).replace("'", "").\
+        replace("\\", "").replace("<", "").replace('"', "").replace("  ", " ")
 
 testdata = [Group(name="", header="", footer="")] + [
     Group(name=random_string("name", 10), header=random_string("header", 20), footer=random_string("footer", 20))
