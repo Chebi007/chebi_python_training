@@ -1,6 +1,8 @@
 import pymysql.cursors
 from model.group import Group
 from model.contact import Contact
+from fixture.contact import ContactHelper
+import re
 
 class DbFixture:
 
@@ -31,6 +33,49 @@ class DbFixture:
             for row in cursor:
                 (id, firstname, lastname) = row
                 list.append(Contact(id=str(id), firstname=firstname.strip(), lastname=lastname.strip()))
+        finally:
+            cursor.close()
+        return list
+
+    def get_address_list(self):
+        list = []
+        cursor = self.connection.cursor()
+        try:
+            cursor.execute("select address from addressbook where deprecated='0000-00-00 00:00:00'")
+            for address in cursor:
+                list.append(address[0])
+        finally:
+            cursor.close()
+        return list
+
+    def get_email_list(self):
+        list = []
+        cursor = self.connection.cursor()
+        try:
+            cursor.execute("select email, email2, email3 from addressbook where deprecated='0000-00-00 00:00:00'")
+            for row in cursor:
+                (email, email2, email3) = row
+                list.append("\n".join(filter(lambda x: x != "", filter(lambda x: x is not None,
+                                                           [email.strip(), email2.strip(), email3.strip()]))))
+        finally:
+            cursor.close()
+        return list
+
+
+    def clear(self, s):
+        return re.sub("[- (\)./]", "", s)
+
+    def get_phone_list(self):
+        list = []
+        cursor = self.connection.cursor()
+        try:
+            cursor.execute("select home, mobile, work , phone2 from addressbook where deprecated='0000-00-00 00:00:00'")
+            for row in cursor:
+                (home, mobile, work, phone2) = row
+                list.append("\n".join(filter(lambda x: x != "",
+                                map(lambda x: self.clear(x),
+                                    filter(lambda x: x is not None,
+                                                           [home.strip(), mobile.strip(), work.strip(), phone2.strip()])))))
         finally:
             cursor.close()
         return list

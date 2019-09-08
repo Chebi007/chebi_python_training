@@ -2,6 +2,8 @@ __author__ = 'Liliia'
 
 from model.contact import Contact
 import re
+import random
+from selenium.webdriver.support.ui import Select
 
 class ContactHelper:
 
@@ -54,6 +56,21 @@ class ContactHelper:
     def select_contact_by_id(self, id):
         wd = self.app.wd
         wd.find_element_by_id("{}".format(id)).click()
+
+    def add_contact_to_group(self, contact, group):
+        wd = self.app.wd
+        self.app.open_home_page()
+        self.select_contact_by_id(contact.id)
+        select = Select(wd.find_element_by_name('to_group'))
+        select.select_by_visible_text(group.name)
+        wd.find_element_by_xpath("(//input[@name='add'])").click()
+        wd.find_element_by_link_text('group page "{}"'.format(group.name)).click()
+
+    def remove_contact_from_group(self, contact, group):
+        wd = self.app.wd
+        self.select_contact_by_id(contact.id)
+        wd.find_element_by_xpath("(//input[@name='remove'])").click()
+        wd.find_element_by_link_text('group page "{}"'.format(group.name)).click()
 
     def modify_first_contact(self):
         self.modify_contact_by_index(0)
@@ -122,6 +139,36 @@ class ContactHelper:
                                                   all_phones_from_home_page=all_phones, all_emails_from_home_page=all_emails))
         return list(self.contact_cache)
 
+    def get_address_list(self):
+        wd = self.app.wd
+        self.app.open_home_page()
+        list = []
+        for row in wd.find_elements_by_name("entry"):
+            cells = row.find_elements_by_tag_name("td")
+            address1 = cells[3].text
+            list.append(address1)
+        return list
+
+    def get_email_list(self):
+        wd = self.app.wd
+        self.app.open_home_page()
+        list = []
+        for row in wd.find_elements_by_name("entry"):
+            cells = row.find_elements_by_tag_name("td")
+            all_emails = cells[4].text
+            list.append(all_emails)
+        return list
+
+    def get_phones_list(self):
+        wd = self.app.wd
+        self.app.open_home_page()
+        list = []
+        for row in wd.find_elements_by_name("entry"):
+            cells = row.find_elements_by_tag_name("td")
+            all_phones = cells[5].text
+            list.append(all_phones)
+        return list
+
     def open_contact_to_edit_by_index(self, index):
         wd = self.app.wd
         self.app.open_home_page()
@@ -188,7 +235,7 @@ class ContactHelper:
 
 
     def clear(self, s):
-        return re.sub("[() -\/]", "", s)
+        return re.sub("[- (\)./]", "", s)
 
     def merge_phones_like_on_home_page(self, contact):
         return "\n".join(filter(lambda x: x != "",
