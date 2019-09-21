@@ -13,7 +13,7 @@ def test_add_contact_to_group(app):
     group = random.choice(db.get_group_list())
     contact = random.choice(db.get_contacts_not_in_group(Group(id=group.id)))
     app.contact.add_contact_to_group(contact, group)
-    assert contact not in db.get_contacts_not_in_group(Group(id=group.id))
+    assert contact in db.get_contacts_in_group(Group(id=group.id))
 
 
 
