@@ -22,12 +22,15 @@ def test_add_contact_to_group(app):
         app.contact.create(new_contact)
     if len(db.get_group_list()) == 0:
         app.group.create(new_group)
-    contact = random.choice(db.get_contact_list())
+    for contact in db.get_contact_list():
+        if len(db.get_group_list()) != len(db.get_group_list_for_contact(contact)):
+            contact = contact
+            break
+    else:
+        app.contact.create(new_contact)
+        contact = db.get_contact_list()[-1]
     groups = db.get_group_list()
     groups_for_contact = db.get_group_list_for_contact(contact)
-    if len(groups) == len(groups_for_contact):
-        app.group.create(new_group)
-        groups = db.get_group_list()
     groups_for_contact_free = [group for group in groups if group not in groups_for_contact]
     group = random.choice(groups_for_contact_free)
     app.contact.add_contact_to_group(contact, group)

@@ -22,12 +22,15 @@ def test_remove_contact_from_group(app):
         app.contact.create(new_contact)
     if len(db.get_group_list()) == 0:
         app.group.create(new_group)
-    group = random.choice(db.get_group_list())
-    contacts_not_in_group = db.get_contacts_not_in_group(Group(id=group.id))
-    if len(contacts_not_in_group) == 0:
-        app.contact.create(new_contact)
-        contacts_not_in_group = db.get_contacts_not_in_group(Group(id=group.id))
+    for group in db.get_group_list():
+        if len(db.get_contacts_not_in_group(group)) != 0:
+            group = group
+            break
+    else:
+        app.group.create(new_group)
+        group = db.get_group_list()[-1]
+    contacts_not_in_group = db.get_contacts_not_in_group(group)
     contact = random.choice(contacts_not_in_group)
     app.contact.add_contact_to_group(contact, group)
     app.contact.remove_contact_from_group(contact, group)
-    assert contact not in db.get_contacts_in_group(Group(id=group.id))
+    assert contact not in db.get_contacts_in_group(group)
