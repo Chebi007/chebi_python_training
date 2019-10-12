@@ -2,7 +2,7 @@ Scenario Outline: Add new contact
     Given a contact list
     Given a contact with <firstname>, <lastname> and <homephone>
     When I add the contact to the list
-    Then The new contact list is equal to the old list with the added contact
+    Then the new contact list is equal to the old list with the added contact
 
     Examples:
     | firstname  | lastname  | homephone  |
